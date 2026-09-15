@@ -26,6 +26,8 @@ app.get("/", (req, res) => {
   });
 });
 
+/* ================= CHAT ================= */
+
 app.post("/chat", async (req, res) => {
   try {
     const message = String(req.body?.message || "").trim();
@@ -53,6 +55,42 @@ app.post("/chat", async (req, res) => {
     });
   }
 });
+
+/* ================= FILE UPLOAD ================= */
+
+app.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No file uploaded"
+      });
+    }
+
+    console.log("File received:", req.file.originalname);
+    console.log("File type:", req.file.mimetype);
+    console.log("File size:", req.file.size);
+
+    res.json({
+      ok: true,
+      message: "File uploaded successfully",
+      filename: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: "File upload failed"
+    });
+
+  }
+});
+
+/* ================= SERVER ================= */
 
 const PORT = process.env.PORT || 3000;
 
